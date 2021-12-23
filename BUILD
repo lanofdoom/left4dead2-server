@@ -59,6 +59,7 @@ download_pkgs(
     name = "steamcmd_deps",
     image_tar = ":prepare_steamcmd_repo_commit.tar",
     packages = [
+        "ca-certificates:i386",
         "steamcmd:i386",
     ],
 )
