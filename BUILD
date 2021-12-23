@@ -42,7 +42,7 @@ install_pkgs(
 )
 
 #
-# Build Counter-Strike: Source Layer
+# Build Left 4 Dead 2 Layer
 #
 
 container_run_and_commit(
@@ -98,6 +98,7 @@ container_layer(
 container_image(
     name = "server_image",
     base = ":server_base",
+    directory = "/opt/game",
     entrypoint = ["/opt/game/entrypoint.sh"],
     env = {
         "L4D2_HOSTNAME": "",
@@ -108,6 +109,9 @@ container_image(
         "L4D2_STEAMGROUP": "",
         "RCON_PASSWORD": "",
     },
+    files = [
+        ":entrypoint.sh",
+    ],
     layers = [
         ":left_4_dead_2",
     ],
