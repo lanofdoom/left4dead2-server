@@ -3,8 +3,7 @@ Docker image for a private, preconfigured private Left 4 Dead 2 server
 as used by the LAN of DOOM.
 
 # Installation
-Run
-``docker pull ghcr.io/lanofdoom/left4dead2-server/left4dead2-server:latest``
+Run ``docker pull ghcr.io/lanofdoom/left4dead2-server:latest``
 
 # Environmental Variables
 ``L4D2_HOSTNAME`` The name of the server as listed in Valve's server browser.

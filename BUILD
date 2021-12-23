@@ -119,6 +119,6 @@ container_push(
     format = "Docker",
     image = ":server_image",
     registry = "ghcr.io",
-    repository = "lanofdoom/left4dead2-server/left4dead2-server",
+    repository = "lanofdoom/left4dead2-server",
     tag = "latest",
 )
