@@ -1,6 +1,6 @@
 #!/bin/bash -ue
 
-[ -z "${L4D2_MOTD}" ] || echo "${L4D2_MOTD}" > /opt/game/l4d2/motd.txt
+[ -z "${L4D2_MOTD}" ] || echo "${L4D2_MOTD}" > /opt/game/left4dead2/motd.txt
 
 /opt/game/srcds_run \
     -game l4d2 \
