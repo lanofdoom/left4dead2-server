@@ -29,7 +29,9 @@ download_pkgs(
     name = "server_deps",
     image_tar = ":container_base_with_i386_packages.tar",
     packages = [
+        "ca-certificates:i386",
         "lib32gcc-s1",
+        "libcurl4:i386",
     ],
 )
 
@@ -59,7 +61,6 @@ download_pkgs(
     name = "steamcmd_deps",
     image_tar = ":prepare_steamcmd_repo_commit.tar",
     packages = [
-        "ca-certificates:i386",
         "steamcmd:i386",
     ],
 )
