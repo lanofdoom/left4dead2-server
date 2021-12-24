@@ -3,7 +3,7 @@
 [ -z "${L4D2_MOTD}" ] || echo "${L4D2_MOTD}" > /opt/game/left4dead2/motd.txt
 
 /opt/game/srcds_run \
-    -game l4d2 \
+    -game left4dead2 \
     -port "$L4D2_PORT" \
     -strictbindport \
     -usercon \
