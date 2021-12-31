@@ -117,7 +117,7 @@ container_image(
     layers = [
         ":left_4_dead_2",
     ],
-    user = "nobody",
+    user = "root",
 )
 
 container_push(
