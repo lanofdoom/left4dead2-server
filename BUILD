@@ -99,8 +99,8 @@ container_layer(
 container_image(
     name = "server_image",
     base = ":server_base",
-    directory = "/opt/game/left4dead2",
-    entrypoint = ["/opt/game/left4dead2/entrypoint.sh"],
+    directory = "/opt/game/left4dead2/cfg",
+    entrypoint = ["/opt/game/left4dead2/cfg/entrypoint.sh"],
     env = {
         "L4D2_HOSTNAME": "",
         "L4D2_MAP": "c8m1_apartment",
