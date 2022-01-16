@@ -1,0 +1,121 @@
+load("@io_bazel_rules_docker//container:container.bzl", "container_image", "container_layer", "container_push")
+load("@io_bazel_rules_docker//docker/util:run.bzl", "container_run_and_extract")
+load("@com_github_lanofdoom_steamlayer//:defs.bzl", "steam_depot_layer")
+
+alias(
+    name = "server_base",
+    actual = "@server_base_image//image:dockerfile_image.tar",
+)
+
+#
+# Download Left 4 Dead 2 Dedicated Server
+#
+
+steam_depot_layer(
+    name = "left4dead2_assets",
+    app = "222860",
+    depot = "222861",
+    directory = "/opt/game",
+    manifest = "7103032637598489043",
+)
+
+steam_depot_layer(
+    name = "left4dead2_server",
+    app = "222860",
+    depot = "222863",
+    directory = "/opt/game",
+    manifest = "2738252472561271689",
+)
+
+#
+# Build Sourcemod Layer
+#
+
+container_image(
+    name = "sourcemod_container",
+    base = ":server_base",
+    directory = "/opt/game/left4dead2",
+    tars = [
+        "@metamod//file",
+        "@sourcemod//file",
+    ],
+)
+
+container_run_and_extract(
+    name = "build_sourcemod",
+    commands = [
+        "cd /opt/game/left4dead2/addons/sourcemod",
+        "mv plugins/basevotes.smx plugins/disabled/basevotes.smx",
+        "mv plugins/funcommands.smx plugins/disabled/funcommands.smx",
+        "mv plugins/funvotes.smx plugins/disabled/funvotes.smx",
+        "mv plugins/playercommands.smx plugins/disabled/playercommands.smx",
+        "mv plugins/disabled/mapchooser.smx plugins/mapchooser.smx",
+        "mv plugins/disabled/rockthevote.smx plugins/rockthevote.smx",
+        "mv plugins/disabled/nominations.smx plugins/nominations.smx",
+        "sed -i /DisableAutoUpdate/s/no/yes/ configs/core.cfg",
+        "chown -R nobody:root /opt",
+        "tar -czvf /archive.tar.gz /opt",
+    ],
+    extract_file = "/archive.tar.gz",
+    image = ":sourcemod_container.tar",
+)
+
+container_layer(
+    name = "sourcemod",
+    tars = [
+        ":build_sourcemod/archive.tar.gz",
+    ],
+)
+
+#
+# Build Configuration Image
+#
+
+container_layer(
+    name = "lanofdoom_server_config",
+    directory = "/opt/game/left4dead2/cfg",
+    files = [
+        ":server.cfg",
+    ],
+)
+
+container_layer(
+    name = "lanofdoom_server_entrypoint",
+    directory = "/opt/game",
+    files = [
+        ":entrypoint.sh",
+    ],
+)
+
+container_image(
+    name = "server_image",
+    base = ":server_base",
+    entrypoint = ["/opt/game/entrypoint.sh"],
+    env = {
+        "L4D2_HOSTNAME": "",
+        "L4D2_MAP": "c8m1_apartment",
+        "L4D2_MOTD": "",
+        "L4D2_PASSWORD": "",
+        "L4D2_PORT": "27015",
+        "L4D2_STEAMGROUP": "",
+        "RCON_PASSWORD": "",
+    },
+    layers = [
+        "left4dead2_assets",
+        "left4dead2_server",
+        ":sourcemod",
+        ":lanofdoom_server_config",
+        ":lanofdoom_server_entrypoint",
+    ],
+    workdir = "/opt/game",
+    symlinks = {"/root/.steam/sdk32/steamclient.so":"/opt/game/bin/steamclient.so"}
+)
+
+container_push(
+    name = "push_server_image",
+    format = "Docker",
+    image = ":server_image",
+    registry = "ghcr.io",
+    repository = "lanofdoom/left4dead2-server",
+    tag = "latest",
+)
