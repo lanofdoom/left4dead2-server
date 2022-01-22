@@ -93,13 +93,43 @@ container_layer(
 )
 
 #
+# Build Config Layer
+#
+
+container_image(
+    name = "config_container",
+    base = ":server_base",
+    directory = "/opt/game/left4dead2/cfg",
+    files = [
+        ":entrypoint.sh",
+        ":server.cfg",
+    ],
+)
+
+container_run_and_extract(
+    name = "build_config",
+    commands = [
+        "chown -R nobody:root /opt",
+        "tar -czvf /archive.tar.gz /opt",
+    ],
+    extract_file = "/archive.tar.gz",
+    image = ":config_container.tar",
+)
+
+container_layer(
+    name = "config_layer",
+    tars = [
+        ":build_config/archive.tar.gz",
+    ],
+)
+
+#
 # Build Final Image
 #
 
 container_image(
     name = "server_image",
     base = ":server_base",
-    directory = "/opt/game/left4dead2/cfg",
     entrypoint = ["/opt/game/left4dead2/cfg/entrypoint.sh"],
     env = {
         "L4D2_HOST": "",
@@ -112,14 +142,11 @@ container_image(
         "L4D2_STEAMGROUP": "",
         "RCON_PASSWORD": "",
     },
-    files = [
-        ":entrypoint.sh",
-        ":server.cfg",
-    ],
     layers = [
         ":left_4_dead_2",
+        ":config_layer",
     ],
-    user = "root",
+    user = "nobody",
 )
 
 container_push(
