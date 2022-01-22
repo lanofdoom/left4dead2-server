@@ -6,6 +6,8 @@ as used by the LAN of DOOM.
 Run ``docker pull ghcr.io/lanofdoom/left4dead2-server:latest``
 
 # Environmental Variables
+``L4D2_HOST`` The host to display on the MOTD screen.
+
 ``L4D2_HOSTNAME`` The name of the server as listed in Valve's server browser.
 
 ``L4D2_PASSWORD`` The password users must enter in order to join the server.

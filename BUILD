@@ -102,6 +102,7 @@ container_image(
     directory = "/opt/game/left4dead2/cfg",
     entrypoint = ["/opt/game/left4dead2/cfg/entrypoint.sh"],
     env = {
+        "L4D2_HOST": "",
         "L4D2_HOSTNAME": "",
         "L4D2_MAP": "c8m1_apartment",
         "L4D2_MOTD": "",
