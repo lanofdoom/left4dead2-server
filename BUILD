@@ -106,6 +106,7 @@ container_image(
         "L4D2_HOSTNAME": "",
         "L4D2_MAP": "c8m1_apartment",
         "L4D2_MOTD": "",
+        "L4D2_MOTD_ENABLED": "0",
         "L4D2_PASSWORD": "",
         "L4D2_PORT": "27015",
         "L4D2_STEAMGROUP": "",

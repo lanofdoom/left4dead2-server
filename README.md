@@ -16,6 +16,9 @@ Run ``docker pull ghcr.io/lanofdoom/left4dead2-server:latest``
 
 ``L4D2_MOTD`` The MOTD to use for the server.
 
+``L4D2_MOTD_ENABLED`` Controls if the MOTD should be displayed when a user joins
+the server. ``0`` by default.
+
 ``L4D2_PORT`` The port to use for the server. ``27015`` by default.
 
 ``L4D2_STEAMGROUP`` The Steam group to that will see the server displayed on the

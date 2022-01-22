@@ -10,6 +10,7 @@
     -strictbindport \
     -usercon \
     +ip 0.0.0.0 \
+    +motd_enabled "$L4D2_MOTD_ENABLED" \
     +map "$L4D2_MAP" \
     +hostname "$L4D2_HOSTNAME" \
     +rcon_password "$RCON_PASSWORD" \
