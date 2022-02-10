@@ -25,8 +25,8 @@ load("@io_bazel_rules_docker//container:container.bzl", "container_pull")
 #
 
 container_pull(
-    name = "container_base",
+    name = "base_image",
     registry = "index.docker.io",
-    repository = "library/debian",
-    tag = "bullseye",
+    repository = "i386/debian",
+    tag = "bullseye-slim",
 )

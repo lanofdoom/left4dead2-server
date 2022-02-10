@@ -1,88 +1,25 @@
 load("@io_bazel_rules_docker//container:container.bzl", "container_image", "container_layer", "container_push")
-load("@io_bazel_rules_docker//docker/package_managers:download_pkgs.bzl", "download_pkgs")
-load("@io_bazel_rules_docker//docker/package_managers:install_pkgs.bzl", "install_pkgs")
 load("@io_bazel_rules_docker//docker/util:run.bzl", "container_run_and_commit", "container_run_and_extract")
-
-#
-# Build Server Base Image
-#
-
-container_run_and_extract(
-    name = "enable_i386_sources",
-    commands = [
-        "dpkg --add-architecture i386",
-    ],
-    extract_file = "/var/lib/dpkg/arch",
-    image = "@container_base//image",
-)
-
-container_image(
-    name = "container_base_with_i386_packages",
-    base = "@container_base//image",
-    directory = "/var/lib/dpkg",
-    files = [
-        ":enable_i386_sources/var/lib/dpkg/arch",
-    ],
-)
-
-download_pkgs(
-    name = "server_deps",
-    image_tar = ":container_base_with_i386_packages.tar",
-    packages = [
-        "ca-certificates:i386",
-        "lib32gcc-s1",
-        "libcurl4:i386",
-    ],
-)
-
-install_pkgs(
-    name = "server_base",
-    image_tar = ":container_base_with_i386_packages.tar",
-    installables_tar = ":server_deps.tar",
-    installation_cleanup_commands = "rm -rf /var/lib/apt/lists/*",
-    output_image_name = "server_base",
-)
 
 #
 # Build Left 4 Dead 2 Layer
 #
 
-container_run_and_commit(
-    name = "prepare_steamcmd_repo",
+container_run_and_extract(
+    name = "download_left_4_dead_2",
     commands = [
         "sed -i -e's/ main/ main non-free/g' /etc/apt/sources.list",
         "echo steam steam/question select 'I AGREE' | debconf-set-selections",
         "echo steam steam/license note '' | debconf-set-selections",
-    ],
-    image = ":server_base.tar",
-)
-
-download_pkgs(
-    name = "steamcmd_deps",
-    image_tar = ":prepare_steamcmd_repo_commit.tar",
-    packages = [
-        "steamcmd:i386",
-    ],
-)
-
-install_pkgs(
-    name = "steamcmd_base",
-    image_tar = ":prepare_steamcmd_repo_commit.tar",
-    installables_tar = ":steamcmd_deps.tar",
-    installation_cleanup_commands = "rm -rf /var/lib/apt/lists/*",
-    output_image_name = "steamcmd_base",
-)
-
-container_run_and_extract(
-    name = "download_left_4_dead_2",
-    commands = [
+        "apt update",
+        "apt install -y ca-certificates steamcmd",
         "/usr/games/steamcmd +login anonymous +force_install_dir /opt/game +app_update 222860 validate +quit",
         "rm -rf /opt/game/steamapps",
         "chown -R nobody:root /opt/game",
         "tar -czvf /archive.tar.gz /opt/game/",
     ],
     extract_file = "/archive.tar.gz",
-    image = ":steamcmd_base.tar",
+    image = "@base_image//image",
 )
 
 container_layer(
@@ -98,7 +35,7 @@ container_layer(
 
 container_image(
     name = "config_container",
-    base = ":server_base",
+    base = "@base_image//image",
     directory = "/opt/game/left4dead2/cfg",
     files = [
         ":entrypoint.sh",
@@ -129,7 +66,7 @@ container_layer(
 
 container_image(
     name = "server_image",
-    base = ":server_base",
+    base = "@base_image//image",
     entrypoint = ["/opt/game/left4dead2/cfg/entrypoint.sh"],
     env = {
         "L4D2_HOST": "",
