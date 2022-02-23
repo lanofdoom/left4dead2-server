@@ -4,7 +4,8 @@
 
 [ -z "${L4D2_MOTD}" ] || echo "${L4D2_MOTD}" > /opt/game/left4dead2/motd.txt
 
-/opt/game/srcds_run \
+# Call srcds_linux instead of srcds_run to avoid restart logic
+LD_LIBRARY_PATH="/opt/game:/opt/game/bin:${LD_LIBRARY_PATH:-}" /opt/game/srcds_linux \
     -game left4dead2 \
     -port "$L4D2_PORT" \
     -strictbindport \
