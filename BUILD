@@ -19,7 +19,7 @@ steam_depot_layer(
 
 container_layer(
     name = "config",
-    directory = "/opt/game/left4dead2/cfg",
+    directory = "/opt/game/left4dead2/cfg/templates",
     files = [
         ":server.cfg",
     ],
