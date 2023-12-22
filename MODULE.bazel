@@ -18,7 +18,7 @@ oci = use_extension("@rules_oci//oci:extensions.bzl", "oci")
 
 oci.pull(
     name = "debian_i386",
-    digest = "sha256:1fbc487d3fdb366431a282d1b16e8ac9970a6394807588abe260eae4987d04c6",  # bookworm-slim
+    tag = "bookworm-slim",
     image = "docker.io/i386/debian",
 )
 use_repo(oci, "debian_i386")
