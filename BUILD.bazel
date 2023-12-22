@@ -52,6 +52,7 @@ oci_image(
     tars = [
         ":left4dead2_layer",
         ":config_layer",
+        ":entrypoint_layer",
     ],
 )
 
