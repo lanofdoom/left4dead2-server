@@ -1,0 +1,24 @@
+module(name = "left4dead2_server")
+
+bazel_dep(name = "rules_pkg", version = "0.9.1")
+bazel_dep(name = "rules_oci", version = "1.4.3")
+bazel_dep(name = "rules_steam")
+
+git_override(
+    module_name = "rules_steam",
+    commit = "a177cd8197fa887fe4bd33cfe0a54a8adc3e36a0",
+    remote = "https://github.com/lanofdoom/rules_steam.git",
+)
+
+steam = use_extension("@rules_steam//:steam.bzl", "steam")
+steam.app(name = "left4dead2", app = "222860")
+use_repo(steam, "left4dead2")
+
+oci = use_extension("@rules_oci//oci:extensions.bzl", "oci")
+
+oci.pull(
+    name = "debian_i386",
+    digest = "sha256:1fbc487d3fdb366431a282d1b16e8ac9970a6394807588abe260eae4987d04c6",  # bookworm-slim
+    image = "docker.io/i386/debian",
+)
+use_repo(oci, "debian_i386")

@@ -1,7 +1,7 @@
 #!/bin/bash -ue
 
+# Set host name and MOTD
 [ -z "${L4D2_HOST}" ] || echo "${L4D2_HOST}" > /opt/game/left4dead2/host.txt
-
 [ -z "${L4D2_MOTD}" ] || echo "${L4D2_MOTD}" > /opt/game/left4dead2/motd.txt
 
 # Update server config file
