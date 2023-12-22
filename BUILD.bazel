@@ -50,7 +50,7 @@ oci_image(
         "RCON_PASSWORD": "",
     },
     tars = [
-        ":left4dead2",
+        ":left4dead2_layer",
         ":config_layer",
     ],
 )
